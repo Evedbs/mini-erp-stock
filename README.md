@@ -74,6 +74,19 @@ Voici les commandes principales à exécuter depuis la racine du projet (mini-er
 | Entrer dans le Back  | docker compose exec web bash | Ouvre un terminal à l'intérieur du conteneur Django pour déboguer.                                  |
 | Tout nettoyer        | docker compose down -v       | ⚠️ Zone de danger : Supprime les conteneurs ET efface la base de données (repart à zéro).            |
 
+## 📊 Business Intelligence & Data Analysis
+
+Le projet inclut un pipeline de données permettant de piloter l'exploitation du restaurant. En se connectant directement à la base PostgreSQL, le rapport Power BI permet de répondre aux problématiques suivantes :
+
+* **Optimisation des achats** : Identification des ingrédients à forte rotation pour éviter les ruptures.
+* **Suivi de la rentabilité** : Calcul du chiffre d'affaires estimé basé sur les sorties de stock réelles.
+* **Contrôle du gaspillage** : Analyse isolée des mouvements pour motif "Perte/Périmé" afin d'ajuster les quantités produites.
+* **Popularité du menu** : Visualisation du mix-produit (ventes par type de plat).
+
+![Aperçu du pilotage de stock](frontend/public/PBI_screenshot.png)
+
+> **Architecture Data** : Un script Python simule 6 mois de flux (1000+ entrées/sorties) pour tester la robustesse des calculs DAX et la réactivité des visuels face à un volume de données réaliste.
+
 ## 📂 Structure du projet
 L'architecture est organisée pour séparer clairement les responsabilités, unifiées par le fichier Docker Compose à la racine.
 ```bash
