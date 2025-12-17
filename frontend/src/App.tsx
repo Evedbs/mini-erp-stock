@@ -1,56 +1,72 @@
 import { useState } from "react";
-import ProductList from "./components/ProductList";
-import ProductForm from "./components/ProductForm";
+import DishList from "./components/DishList";
+import IngredientList from "./components/IngredientList";
+import StockReception from "./components/StockReception";
+import MovementHistory from "./components/MovementHistory"; // <-- Import
 import Login from "./components/Login";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    const token = localStorage.getItem("access_token");
-    return !!token; // Retourne true si le token existe, sinon false
+    return !!localStorage.getItem("access_token");
   });
 
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const handleLoginSuccess = () => {
-    setIsAuthenticated(true);
-  };
+  // Une seule fonction pour rafraîchir TOUS les tableaux
+  const refreshAll = () => setRefreshKey((prev) => prev + 1);
 
   const handleLogout = () => {
-    // Se déconnecter = Jeter le token
     localStorage.removeItem("access_token");
     setIsAuthenticated(false);
   };
 
-  const handleProductAdded = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
-
-  if (!isAuthenticated) {
-    return <Login onLoginSuccess={handleLoginSuccess} />;
-  }
+  if (!isAuthenticated)
+    return <Login onLoginSuccess={() => setIsAuthenticated(true)} />;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-10">
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8 flex justify-between items-center">
+    <div className="min-h-screen bg-gray-100 p-8 pb-20">
+      {" "}
+      {/* pb-20 pour laisser de l'espace en bas */}
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* HEADER */}
+        <header className="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm sticky top-0 z-10 border-b border-gray-200">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              📦 Mini ERP Stock
+            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+              👨‍🍳 Chef's ERP{" "}
+              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-normal">
+                v1.0
+              </span>
             </h1>
-            <p className="text-gray-500 text-sm">Connecté en tant qu'Admin</p>
+            <p className="text-gray-500 text-sm">
+              Gestion Restaurant & Food Cost
+            </p>
           </div>
-
           <button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm"
+            className="text-red-500 border border-red-200 px-4 py-2 rounded-lg hover:bg-red-50 transition text-sm font-medium"
           >
             Déconnexion
           </button>
         </header>
 
-        <main>
-          <ProductForm onProductAdded={handleProductAdded} />
-          <ProductList key={refreshKey} />
+        <main className="space-y-8">
+          {/* SECTION 1 : VENTES (MENU) */}
+          <DishList onSale={refreshAll} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* SECTION 2 : ACHATS (Formulaire) */}
+            <div className="lg:col-span-1">
+              <StockReception onStockUpdate={refreshAll} />
+            </div>
+
+            {/* SECTION 3 : STOCK ACTUEL */}
+            <div className="lg:col-span-2">
+              <IngredientList refreshTrigger={refreshKey} />
+            </div>
+          </div>
+
+          {/* SECTION 4 : HISTORIQUE (NOUVEAU) */}
+          <MovementHistory refreshTrigger={refreshKey} />
         </main>
       </div>
     </div>
