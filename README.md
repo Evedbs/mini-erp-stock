@@ -1,12 +1,12 @@
-# 📦 Mini ERP Stock
+# 📦 RestoTrack ERP
 
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
-Une application de gestion de stock Full-Stack (Django + React) entièrement dockerisée.
-Le projet permet de gérer des produits, suivre les quantités en temps réel et visualiser la valeur du stock, le tout orchestré via Docker Compose.
+Solution ERP Full-Stack (Django + React) dockerisé dédiée à la gestion opérationnelle et analytique pour la restauration.
+Le projet orchestre l'ensemble de la chaîne de valeur : de l'inventaire des ingrédients à la vente de plats finis. Il intègre un moteur de simulation de flux sur 6 mois et une couche de Business Intelligence pour piloter la rentabilité et les stocks en temps réel.
 
 ## 🛠 Stack Technique
 
