@@ -59,6 +59,13 @@ docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
+### 🧪 Génération de données de test (Optionnel)
+Pour tester les capacités analytiques du dashboard Power BI, vous pouvez injecter un historique de 6 mois de mouvements de stock (environ 1000 transactions réalistes) :
+
+```bash
+docker compose exec web python generate_data.py
+```
+
 ## 🌍 Accès à l'application
 Une fois les conteneurs lancés, l'application est accessible via votre navigateur :
 * Frontend (Application React) : http://localhost:5173
