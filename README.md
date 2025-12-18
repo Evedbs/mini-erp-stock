@@ -8,6 +8,9 @@
 Solution ERP Full-Stack (Django + React) dockerisé dédiée à la gestion opérationnelle et analytique pour la restauration.
 Le projet orchestre l'ensemble de la chaîne de valeur : de l'inventaire des ingrédients à la vente de plats finis. Il intègre un moteur de simulation de flux sur 6 mois et une couche de Business Intelligence pour piloter la rentabilité et les stocks en temps réel.
 
+![Aperçu de l'interface front](frontend/public/Screenshot_ERP_11.png)
+![Aperçu de l'interface front](frontend/public/Screenshot_ERP_11.png)
+
 ## 🛠 Stack Technique
 
 * **Infrastructure** : Docker & Docker Compose
