@@ -6,19 +6,17 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'stock_quantity', 'unit', 'cost_per_unit')
     search_fields = ('name', 'sku')
 
-# Cette classe permet d'ajouter des ingrédients directement dans la page d'un Plat
 class RecipeLineInline(admin.TabularInline):
     model = RecipeLine
-    extra = 1 # Affiche une ligne vide par défaut pour ajouter un ingrédient
-    autocomplete_fields = ['ingredient'] # Pratique si tu as beaucoup d'ingrédients
+    extra = 1
+    autocomplete_fields = ['ingredient']
 
 @admin.register(Dish)
 class DishAdmin(admin.ModelAdmin):
     list_display = ('name', 'sale_price', 'food_cost_display', 'margin_display')
     search_fields = ('name',)
-    inlines = [RecipeLineInline] # Ajoute le tableau des ingrédients ici
+    inlines = [RecipeLineInline]
 
-    # On utilise des méthodes pour afficher les propriétés calculées dans l'admin
     def food_cost_display(self, obj):
         return f"{obj.food_cost} €"
     food_cost_display.short_description = "Coût Matière"

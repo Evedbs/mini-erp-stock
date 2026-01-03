@@ -18,7 +18,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = [IsAuthenticated]
 
-    # --- ACTION RECEPTION DE MARCHANDISE ---
     @action(detail=True, methods=['post'])
     def receive_stock(self, request, pk=None):
         """
@@ -27,7 +26,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
         """
         ingredient = self.get_object()
         try:
-            # On sécurise la conversion
             raw_qty = request.data.get('quantity', 0)
             if raw_qty is None: raw_qty = 0
             quantity_received = float(raw_qty)
@@ -40,16 +38,14 @@ class IngredientViewSet(viewsets.ModelViewSet):
              return Response({"error": "La quantité doit être positive"}, status=status.HTTP_400_BAD_REQUEST)
 
         with transaction.atomic():
-            # 1. Mise à jour du prix d'achat (si fourni)
             if new_price is not None and str(new_price).strip() != "":
                 try:
                     price_val = float(new_price)
                     if price_val > 0:
                         ingredient.cost_per_unit = price_val
                 except ValueError:
-                    pass # Si le prix n'est pas un nombre valide, on l'ignore
+                    pass
 
-            # 2. Création du mouvement de stock (Positif = Entrée)
             StockMovement.objects.create(
                 ingredient=ingredient,
                 quantity=quantity_received,
@@ -57,7 +53,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
                 user=request.user
             )
 
-            # 3. Mise à jour du stock physique
             ingredient.stock_quantity += quantity_received
             ingredient.save()
 
@@ -73,7 +68,6 @@ class DishViewSet(viewsets.ModelViewSet):
     serializer_class = DishSerializer
     permission_classes = [IsAuthenticated]
 
-    # --- ACTION VENTE (Déstockage) ---
     @action(detail=True, methods=['post'])
     def register_sale(self, request, pk=None):
         dish = self.get_object()
@@ -121,25 +115,20 @@ class StockMovementViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-    # --- ACTION EXPORT CSV ---
     @action(detail=False, methods=['get'])
     def export_csv(self, request):
         """
         Génère un fichier CSV de tout l'historique
         """
-        # On prépare la réponse HTTP avec le bon type de contenu
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="historique_stock.csv"'
 
-        # Astuce : On ajoute le BOM (Byte Order Mark) pour qu'Excel ouvre bien les accents (utf-8)
         response.write(u'\ufeff'.encode('utf8'))
 
-        writer = csv.writer(response, delimiter=';') # Point-virgule pour Excel français
+        writer = csv.writer(response, delimiter=';')
 
-        # 1. L'en-tête des colonnes
         writer.writerow(['Date', 'Heure', 'Utilisateur', 'Type', 'Ingrédient', 'Quantité', 'Raison'])
 
-        # 2. Les données
         movements = self.filter_queryset(self.get_queryset())
         for move in movements:
             writer.writerow([

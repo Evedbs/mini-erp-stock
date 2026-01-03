@@ -11,16 +11,12 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write("⚠️  Nettoyage complet de la base de données...")
         
-        # 1. On efface tout
-        # L'ordre est important car StockMovement dépend de Ingredient
         StockMovement.objects.all().delete()
         Dish.objects.all().delete()
         Ingredient.objects.all().delete()
         
-        # 2. On s'assure d'avoir un user
         user, _ = User.objects.get_or_create(username='eve', defaults={'email': 'eve@example.com'})
 
-        # 3. Création des Ingrédients
         self.stdout.write("Creating ingredients...")
         ingredients_data = [
             ("Farine", "kg", 1.50),
@@ -35,19 +31,17 @@ class Command(BaseCommand):
         
         created_ingredients = []
         for i, (name, unit, cost) in enumerate(ingredients_data):
-            # Génère un SKU unique pour satisfaire la contrainte unique=True
             unique_sku = f"ING-{i+1:03d}" 
             
             ing = Ingredient.objects.create(
                 name=name, 
                 unit=unit, 
                 cost_per_unit=cost, 
-                stock_quantity=0, # On part de 0, les mouvements d'achat rempliront le stock
+                stock_quantity=0,
                 sku=unique_sku
             )
             created_ingredients.append(ing)
 
-        # 4. Création des Plats
         self.stdout.write("Creating dishes...")
         dishes_data = [
             ("Pizza Margherita", 12.00),
@@ -59,11 +53,9 @@ class Command(BaseCommand):
         
         created_dishes = []
         for name, price_val in dishes_data:
-            # CORRECTION ICI : Utilisation de 'sale_price' comme dans ton modèle
             dish = Dish.objects.create(name=name, sale_price=price_val)
             created_dishes.append(dish)
 
-        # 5. Génération des 1000 mouvements
         self.stdout.write("Génération de l'historique (1000 lignes)...")
         today = timezone.now()
         
@@ -80,7 +72,7 @@ class Command(BaseCommand):
                 
                 movement = StockMovement.objects.create(
                     ingredient=ing,
-                    quantity=-qty, # Négatif pour vente
+                    quantity=-qty,
                     reason=f"Vente: {dish.name}",
                     user=user
                 )
@@ -91,7 +83,7 @@ class Command(BaseCommand):
                 
                 movement = StockMovement.objects.create(
                     ingredient=ing,
-                    quantity=qty, # Positif pour achat
+                    quantity=qty,
                     reason="Livraison Fournisseur",
                     user=user
                 )
@@ -102,16 +94,11 @@ class Command(BaseCommand):
                 
                 movement = StockMovement.objects.create(
                     ingredient=ing,
-                    quantity=-qty, # Négatif pour perte
+                    quantity=-qty,
                     reason="Perte / Périmé",
                     user=user
                 )
 
-            # ASTUCE IMPORTANTE :
-            # Ton modèle a auto_now_add=True sur created_at.
-            # De plus, ta méthode save() modifie le stock.
-            # Si on refait movement.save(), on fausse le stock (double comptage).
-            # On utilise .update() pour modifier la date directement en SQL sans déclencher save().
             StockMovement.objects.filter(pk=movement.pk).update(created_at=fake_date)
 
         self.stdout.write(self.style.SUCCESS(f"Terminé ! 1000 mouvements créés."))

@@ -40,7 +40,6 @@ class Dish(models.Model):
         """ Calcule la marge brute """
         if self.sale_price == 0: return 0
         cost = self.food_cost
-        # On considère le prix de vente HT (approximation TVA 10% pour l'exemple)
         price_ht = float(self.sale_price) / 1.10 
         return round(price_ht - cost, 2)
 
@@ -53,7 +52,6 @@ class RecipeLine(models.Model):
     def __str__(self):
         return f"{self.dish.name} - {self.ingredient.name}"
 
-# On garde le mouvement de stock, mais lié aux Ingrédients maintenant
 class StockMovement(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE, related_name='movements')
     quantity = models.FloatField()
