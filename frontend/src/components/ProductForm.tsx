@@ -7,7 +7,6 @@ interface Props {
 }
 
 const ProductForm = ({ onProductAdded }: Props) => {
-  // État local du formulaire
   const [formData, setFormData] = useState({
     sku: "",
     name: "",
@@ -25,13 +24,12 @@ const ProductForm = ({ onProductAdded }: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Envoi à Django
     api
       .post("/products/", formData)
       .then(() => {
         alert("Produit ajouté !");
-        setFormData({ sku: "", name: "", price: "", stock_quantity: 0 }); // Reset form
-        onProductAdded(); // On dit au parent de recharger la liste
+        setFormData({ sku: "", name: "", price: "", stock_quantity: 0 });
+        onProductAdded();
       })
       .catch((error) => {
         console.error(error);

@@ -2,7 +2,7 @@ import { useState } from "react";
 import DishList from "./components/DishList";
 import IngredientList from "./components/IngredientList";
 import StockReception from "./components/StockReception";
-import MovementHistory from "./components/MovementHistory"; // <-- Import
+import MovementHistory from "./components/MovementHistory";
 import Login from "./components/Login";
 
 function App() {
@@ -12,7 +12,6 @@ function App() {
 
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Une seule fonction pour rafraîchir TOUS les tableaux
   const refreshAll = () => setRefreshKey((prev) => prev + 1);
 
   const handleLogout = () => {
@@ -26,9 +25,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-8 pb-20">
       {" "}
-      {/* pb-20 pour laisser de l'espace en bas */}
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* HEADER */}
         <header className="flex justify-between items-center bg-white p-6 rounded-lg shadow-sm sticky top-0 z-10 border-b border-gray-200">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
@@ -50,22 +47,18 @@ function App() {
         </header>
 
         <main className="space-y-8">
-          {/* SECTION 1 : VENTES (MENU) */}
           <DishList onSale={refreshAll} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* SECTION 2 : ACHATS (Formulaire) */}
             <div className="lg:col-span-1">
               <StockReception onStockUpdate={refreshAll} />
             </div>
 
-            {/* SECTION 3 : STOCK ACTUEL */}
             <div className="lg:col-span-2">
               <IngredientList refreshTrigger={refreshKey} />
             </div>
           </div>
 
-          {/* SECTION 4 : HISTORIQUE (NOUVEAU) */}
           <MovementHistory refreshTrigger={refreshKey} />
         </main>
       </div>

@@ -50,7 +50,6 @@ const ProductList = () => {
     }
   };
 
-  // --- CALCULS DASHBOARD ---
   const totalItems = products.length;
   const totalStockValue = products.reduce((acc, product) => {
     return acc + parseFloat(product.price) * product.stock_quantity;

@@ -15,19 +15,15 @@ const Login = ({ onLoginSuccess }: Props) => {
     setError("");
 
     try {
-      // 1. On envoie les identifiants
       const response = await api.post("/token/", {
         username,
         password,
       });
 
-      // 2. Django répond avec { access: "...", refresh: "..." }
       const { access } = response.data;
 
-      // 3. On stocke le token dans le navigateur
       localStorage.setItem("access_token", access);
 
-      // 4. On prévient l'App qu'on est connecté
       onLoginSuccess();
     } catch (err) {
       console.error(err);

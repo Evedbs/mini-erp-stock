@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import api from "../services/api";
 import type { Ingredient } from "../types/restaurant";
 
-// Props pour forcer le rechargement quand une vente est faite ailleurs
 interface Props {
   refreshTrigger: number;
 }

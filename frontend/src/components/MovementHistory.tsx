@@ -3,7 +3,7 @@ import api from "../services/api";
 import type { StockMovement } from "../types/restaurant";
 
 interface Props {
-  refreshTrigger: number; // Pour recharger la liste quand on vend/achète
+  refreshTrigger: number;
 }
 
 const MovementHistory = ({ refreshTrigger }: Props) => {
@@ -13,14 +13,13 @@ const MovementHistory = ({ refreshTrigger }: Props) => {
   const handleExport = async () => {
     try {
       const response = await api.get("/movements/export_csv/", {
-        responseType: "blob", // Important : on dit à axios qu'on attend un fichier binaire
+        responseType: "blob",
       });
 
-      // On crée un lien temporaire dans le navigateur
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "historique_stock.csv"); // Le nom du fichier
+      link.setAttribute("download", "historique_stock.csv");
       document.body.appendChild(link);
       link.click();
 
@@ -33,7 +32,6 @@ const MovementHistory = ({ refreshTrigger }: Props) => {
   };
 
   useEffect(() => {
-    // On ne met pas loading à true ici pour éviter que ça clignote à chaque vente
     api
       .get("/movements/")
       .then((res) => {
@@ -67,7 +65,6 @@ const MovementHistory = ({ refreshTrigger }: Props) => {
 
       <div className="overflow-x-auto max-h-96">
         {" "}
-        {/* Scroll si la liste est longue */}
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50 sticky top-0">
             <tr>

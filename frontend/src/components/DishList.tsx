@@ -3,7 +3,7 @@ import api from "../services/api";
 import type { Dish } from "../types/restaurant";
 
 interface Props {
-  onSale: () => void; // Fonction appelée quand une vente réussit pour rafraîchir le stock
+  onSale: () => void;
 }
 
 const DishList = ({ onSale }: Props) => {
@@ -12,7 +12,6 @@ const DishList = ({ onSale }: Props) => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Reset avant chargement
     setError(null);
     setLoading(true);
 
@@ -40,16 +39,12 @@ const DishList = ({ onSale }: Props) => {
       });
   }, []);
 
-  // --- NOUVELLE FONCTION : GESTION DE LA VENTE ---
   const handleSell = async (id: number, name: string) => {
     try {
-      // On envoie la requête au backend
       await api.post(`/dishes/${id}/register_sale/`, { quantity: 1 });
 
-      // On prévient le composant parent (App.tsx) pour qu'il rafraîchisse la liste des ingrédients
       onSale();
 
-      // Petit feedback utilisateur (tu pourras remplacer par un "toast" plus tard)
       alert(`✅ Vente de "${name}" enregistrée ! Le stock a été déduit.`);
     } catch (error) {
       console.error(error);
@@ -103,7 +98,6 @@ const DishList = ({ onSale }: Props) => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Ratio
             </th>
-            {/* Nouvelle Colonne Action */}
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Action
             </th>
@@ -137,7 +131,6 @@ const DishList = ({ onSale }: Props) => {
                     {isNaN(ratio) ? "0%" : ratio.toFixed(1) + "%"}
                   </span>
                 </td>
-                {/* Le bouton de vente */}
                 <td className="px-6 py-4 text-right">
                   <button
                     onClick={() => handleSell(dish.id, dish.name)}
@@ -151,7 +144,6 @@ const DishList = ({ onSale }: Props) => {
           })}
           {dishes.length === 0 && (
             <tr>
-              {/* Note: colSpan augmenté à 6 pour prendre en compte la nouvelle colonne */}
               <td colSpan={6} className="p-8 text-center text-gray-400">
                 Aucun plat trouvé dans le menu.
               </td>

@@ -13,7 +13,6 @@ const StockReception = ({ onStockUpdate }: Props) => {
   const [newPrice, setNewPrice] = useState<string>("");
 
   useEffect(() => {
-    // On charge la liste pour le menu déroulant
     api.get("/ingredients/").then((res) => setIngredients(res.data));
   }, []);
 
@@ -29,10 +28,9 @@ const StockReception = ({ onStockUpdate }: Props) => {
 
       alert("📦 Réception enregistrée !");
 
-      // Reset du formulaire
       setQuantity("");
       setNewPrice("");
-      onStockUpdate(); // On rafraîchit la liste des stocks
+      onStockUpdate();
     } catch (error) {
       console.error(error);
       alert("Erreur lors de la réception.");
